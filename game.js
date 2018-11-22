@@ -44,31 +44,58 @@ class Vector {
 соответствующим координатам исходного вектора, умноженным на множитель.
 */
 
-class Actor{}
+class Actor{
+  constructor(position = new Vector(0, 0), size = new Vector(1, 1), speed = new Vector(0, 0)) {
+    if(){
+      throw ``;
+    }
+    this.position = position;
+    this.size = size;
+    this.speed = speed;
+  }
+  act() {}
+
+  get left() {}
+  get top() {}
+  get right() {}
+  get bottom() {}
+
+  get type() {
+    return 'actor';
+  }
+
+  isIntersect(actor) {
+  if(!(actor instanceof Actor)){
+    throw `аргумент другого типа`;
+  }
+  if (actor === this) {
+    return false;
+  }
+
+  return ???;
+
+  }
+}
 
 /*
 Движущийся объект
 Необходимо реализовать класс Actor, который позволит контролировать все движущиеся 
 объекты на игровом поле и контролировать их пересечение.
-
 Конструктор
 Принимает три аргумента: расположение, объект типа Vector, размер, тоже объект 
 типа Vector и скорость, тоже объект типа Vector. Все аргументы необязательные. 
 По умолчанию создается объект с координатами 0:0, размером 1x1 и скоростью 0:0.
 
-Если в качестве первого, второго или третьего аргумента передать не объект типа Vector, 
+!!?? Если в качестве первого, второго или третьего аргумента передать не объект типа Vector, 
 то конструктор должен бросить исключение.
 
 Свойства
 Должно быть определено свойство pos, в котором размещен Vector.
-
 Должно быть определено свойство size, в котором размещен Vector.
-
 Должно быть определено свойство speed, в котором размещен Vector.
-
 Должен быть определен метод act, который ничего не делает.
 
-Должны быть определены свойства только для чтения left, top, right, bottom, 
+!!?? Должны быть определены свойства только для чтения left, top, right, bottom, 
 в которых установлены границы объекта по осям X и Y с учетом его расположения и размера.
 
 Должен иметь свойство type — строку со значением actor, только для чтения.
@@ -76,59 +103,12 @@ class Actor{}
 Метод isIntersect
 Метод проверяет, пересекается ли текущий объект с переданным объектом, и если да, 
 возвращает true, иначе – false.
-
 Принимает один аргумент — движущийся объект типа Actor. Если передать аргумент 
 другого типа или вызвать без аргументов, то метод бросает исключение.
-
 Если передать в качестве аргумента этот же объект, то всегда возвращает false. 
 Объект не пересекается сам с собой.
-
 Объекты, имеющие смежные границы, не пересекаются.
-
-Пример кода
-const items = new Map();
-const player = new Actor();
-items.set('Игрок', player);
-items.set('Первая монета', new Actor(new Vector(10, 10)));
-items.set('Вторая монета', new Actor(new Vector(15, 5)));
-
-function position(item) {
-  return ['left', 'top', 'right', 'bottom']
-    .map(side => `${side}: ${item[side]}`)
-    .join(', ');  
-}
-
-function movePlayer(x, y) {
-  player.pos = player.pos.plus(new Vector(x, y));
-}
-
-function status(item, title) {
-  console.log(`${title}: ${position(item)}`);
-  if (player.isIntersect(item)) {
-    console.log(`Игрок подобрал ${title}`);
-  }
-}
-
-items.forEach(status);
-movePlayer(10, 10);
-items.forEach(status);
-movePlayer(5, -5);
-items.forEach(status);
-Результат работы примера:
-
-Игрок: left: 0, top: 0, right: 1, bottom: 1
-Первая монета: left: 10, top: 10, right: 11, bottom: 11
-Вторая монета: left: 15, top: 5, right: 16, bottom: 6
-Игрок: left: 10, top: 10, right: 11, bottom: 11
-Первая монета: left: 10, top: 10, right: 11, bottom: 11
-Игрок подобрал Первая монета
-Вторая монета: left: 15, top: 5, right: 16, bottom: 6
-Игрок: left: 15, top: 5, right: 16, bottom: 6
-Первая монета: left: 10, top: 10, right: 11, bottom: 11
-Вторая монета: left: 15, top: 5, right: 16, bottom: 6
-Игрок подобрал Вторая монета
 */
-
 
 
 class Level{}
