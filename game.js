@@ -111,7 +111,20 @@ class Actor{
 */
 
 
-class Level{}
+class Level{
+  constructor(grid = [], actors = []) {
+    this.grid = grid;
+    this.actors = actors;
+    this.player = ;
+    this.height = this.grid.length;
+    this.width = ;
+    this.status = null;
+    this.finishDelay = 1;
+  }
+  isFinished() {
+  return this.status !== 0 && this.finishDelay < 0;
+  }
+}
 
 /*
 Объекты класса Level реализуют схему игрового поля конкретного уровня, контролируют 
