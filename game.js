@@ -109,23 +109,8 @@ class Actor{
 Объект не пересекается сам с собой.
 Объекты, имеющие смежные границы, не пересекаются.
 */
-
-
-class Level{
-  constructor(grid = [], actors = []) {
-    this.grid = grid;
-    this.actors = actors;
-    this.player = ;
-    this.height = this.grid.length;
-    this.width = ;
-    this.status = null;
-    this.finishDelay = 1;
-  }
-  isFinished() {
-  return this.status !== 0 && this.finishDelay < 0;
-  }
-}
-
+/*
+// ---------------------------
 /*
 Объекты класса Level реализуют схему игрового поля конкретного уровня, контролируют 
 все движущиеся объекты на нём и реализуют логику игры. Уровень представляет собой 
@@ -148,15 +133,11 @@ class Level{
 Конструктор
 Принимает два аргумента: сетку игрового поля с препятствиями, массив массивов строк, 
 и список движущихся объектов, массив объектов Actor. Оба аргумента необязательные.
-
 Свойства
 Имеет свойство grid — сетку игрового поля. Двумерный массив строк.
-
 Имеет свойство actors — список движущихся объектов игрового поля, массив объектов Actor.
-
 Имеет свойство player — движущийся объект, тип которого — свойство type — равно player. 
 Игорок передаётся с остальными движущимися объектами.
-
 Имеет свойство height — высоту игрового поля, равное числу строк в сетке из первого 
 аргумента.
 
@@ -177,29 +158,23 @@ class Level{
 Метод actorAt
 Определяет, расположен ли какой-то другой движущийся объект в переданной позиции, 
 и если да, вернёт этот объект.
-
 Принимает один аргумент — движущийся объект, Actor. Если не передать аргумент или 
 передать не объект Actor, метод должен бросить исключение.
-
 Возвращает undefined, если переданный движущийся объект не пересекается ни с одним 
 объектом на игровом поле.
-
 Возвращает объект Actor, если переданный объект пересекается с ним на игровом поле. 
 Если пересекается с несколькими объектами, вернет первый.
 
 Метод obstacleAt
 Аналогично методу actorAt определяет, нет ли препятствия в указанном месте. 
 Также этот метод контролирует выход объекта за границы игрового поля.
-
 Так как движущиеся объекты не могут двигаться сквозь стены, то метод принимает 
 два аргумента: положение, куда собираемся передвинуть объект, вектор Vector, 
 и размер этого объекта, тоже вектор Vector. Если первым и вторым аргументом 
 передать не Vector, то метод бросает исключение.
-
 Вернет строку, соответствующую препятствию из сетки игрового поля, пересекающему 
 область, описанную двумя переданными векторами, либо undefined, если в этой области 
 препятствий нет.
-
 Если описанная двумя векторами область выходит за пределы игрового поля, то метод
  вернет строку lava, если область выступает снизу. И вернет wall в остальных случаях. 
  Будем считать, что игровое поле слева, сверху и справа огорожено стеной и снизу у 
@@ -208,27 +183,86 @@ class Level{
 Метод removeActor
 Метод удаляет переданный объект с игрового поля. Если такого объекта на игровом поле 
 нет, не делает ничего.
-
 Принимает один аргумент, объект Actor. Находит и удаляет его.
 
 Метод noMoreActors
 Определяет, остались ли еще объекты переданного типа на игровом поле.
-
 Принимает один аргумент — тип движущегося объекта, строка.
-
 Возвращает true, если на игровом поле нет объектов этого типа (свойство type). 
 Иначе возвращает false.
+*/
 
+
+class Level{
+  constructor(grid = [], actors = []) {
+    this.grid = grid;
+    this.actors = actors;
+    this.player = actors.find((elType) => elType.type === 'player');
+    this.height = this.grid.length;
+    this.width = Math.max(0, ...cell.length);
+    this.status = null;
+    this.finishDelay = 1;
+  }
+  isFinished() {
+  return this.status !== 0 && this.finishDelay < 0;
+  }
+  actorAt(actor) {
+    if(actor === undefined && !(actor instanceof Actor)) {
+      throw `значение не может быть пустым и можно передать только объекты типа Actor`;
+    }
+    return this.actor.find((thisActor) => actor.isIntersect(thisActor)); // правильно ли?
+  }
+  obstacleAt(objToMove, objSize){
+    if (!(objToMove instanceof Vector) || !(objSize instanceof Vector)) {
+      throw `только объекты типа Vector`;
+    }
+    const ceilBorder = ;
+    const floorBorder = ;
+    const leftBorder = ;
+    const rightBorder = ;
+
+    if (floorBorder > this.height) {
+      retirn 'lava';
+    }
+    if (ceilBorder > this.height || leftBorder > this.width || rightBorder > this.width) {
+      return 'wall';
+    }
+  }
+  removeActor(actor) {
+  const result = this.actors.findIndex((thisActor) => actor.type === thisActor);
+    if (result >= 0) {
+      this.actros.splice(result, 1);
+    }
+  }
+  noMoreActors(actoType) {
+    return !(this.actors.find((actor) => actor.type === actoType));
+  }
+  playerTouched(objType, actorTouch) {
+    if (typeof objType !== 'string') {
+      throw  `в параметре должен быть тип строка`;
+    }
+    if (objType === 'lava' || objType === 'fireball') {
+      this.status = 'lost';
+    }
+    if (this.status !== null) {
+      return false;
+    }
+    if (objType === 'coin' || actorTouch.type === 'coin') {
+      if (this.noMoreActors('coin')) {
+        this.status = 'won';
+      } 
+    }
+  }
+}
+
+/*
 Метод playerTouched
 Один из ключевых методов, определяющий логику игры. Меняет состояние игрового поля 
 при касании игроком каких-либо объектов или препятствий.
-
 Если состояние игры уже отлично от null, то не делаем ничего, игра уже и 
 так завершилась.
-
 Принимает два аргумента. Тип препятствия или объекта, строка. 
 Движущийся объект, которого коснулся игрок, — объект типа Actor, необязательный аргумент.
-
 Если первым аргументом передать строку lava или fireball, 
 то меняем статус игры на lost (свойство status). Игрок проигрывает при касании лавы 
 или шаровой молнии.
@@ -238,52 +272,6 @@ class Level{
 поле не осталось больше монет, то меняем статус игры на won. Игрок побеждает, 
 когда собирает все монеты на уровне. Отсюда вытекает факт, что уровень без монет 
 пройти невозможно.
-
-Пример кода
-const grid = [
-  [undefined, undefined],
-  ['wall', 'wall']
-];
-
-function MyCoin(title) {
-  this.type = 'coin';
-  this.title = title;
-}
-MyCoin.prototype = Object.create(Actor);
-MyCoin.constructor = MyCoin;
-
-const goldCoin = new MyCoin('Золото');
-const bronzeCoin = new MyCoin('Бронза');
-const player = new Actor();
-const fireball = new Actor();
-
-const level = new Level(grid, [ goldCoin, bronzeCoin, player, fireball ]);
-
-level.playerTouched('coin', goldCoin);
-level.playerTouched('coin', bronzeCoin);
-
-if (level.noMoreActors('coin')) {
-  console.log('Все монеты собраны');
-  console.log(`Статус игры: ${level.status}`);
-}
-
-const obstacle = level.obstacleAt(new Vector(1, 1), player.size);
-if (obstacle) {
-  console.log(`На пути препятствие: ${obstacle}`);
-}
-
-const otherActor = level.actorAt(player);
-if (otherActor === fireball) {
-  console.log('Пользователь столкнулся с шаровой молнией');
-}
-
-
-Результат выполнения:
-
-Все монеты собраны
-Статус игры: won
-На пути препятствие: wall
-Пользователь столкнулся с шаровой молнией
 
 */
 
