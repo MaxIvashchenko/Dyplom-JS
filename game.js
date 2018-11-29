@@ -9,7 +9,7 @@ class Vector {
   
   plus(vector) {
     if (!(vector instanceof Vector)) {
-      throw ``;
+      throw `только вектор типа Vector`;
     }
     const newX = this.x + vector.x;
     const newY = this.y + vector.y;
@@ -34,11 +34,19 @@ class Actor{
     this.speed = speed;
   }
   act() {}
-// как правильно передать позиции ? 
-  get left() {}
-  get top() {}
-  get right() {}
-  get bottom() {}
+// правильно ли задал координаты  ? 
+  get left() {
+    return this.pos.x;
+  }
+  get top() {
+    return this.pos.y;
+  }
+  get right() {
+    return this.pos.x + this.size.x;
+  }
+  get bottom() {
+    return this.pos.y + this.size.y;
+  }
 
   get type() {
     return 'actor';
@@ -52,8 +60,12 @@ class Actor{
     return false;
   }
 
-  // return ???; как правильно вернуть: Объекты, имеющие смежные границы, не пересекаются
+  return this.right > actor.left &&
+          this.left < actor.right &&
+          this.bottom > actor.top && 
+          this.top < actor.bottom;
 
+  // вычисления ведуться по 'y' сверху вниз ?
   }
 }
 
@@ -80,10 +92,10 @@ class Level{
     if (!(objToMove instanceof Vector) || !(objSize instanceof Vector)) {
       throw `только объекты типа Vector`;
     }
-    const ceilBorder = ; // ?
-    const floorBorder = ; // ?
-    const leftBorder = ; // ?
-    const rightBorder = ; // ?
+    const rightBorder = objToMove.x; 
+    const ceilBorder = objToMove.y; 
+    const floorBorder = objToMove.y + objSize.y;
+    const leftBorder = objToMove.x + objSize.x; 
 
     if (floorBorder > this.height) {
       retirn 'lava';
@@ -118,7 +130,6 @@ class Level{
     }
   }
 }
-
 
 class LevelParser {
   constructor(dictionaryMoveObj = {}) {
