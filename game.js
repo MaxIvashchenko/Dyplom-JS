@@ -26,7 +26,7 @@ class Vector {
 
 class Actor{
   constructor(pos = new Vector(0, 0), size = new Vector(1, 1), speed = new Vector(0, 0)) {
-    if(!(vector instanceof Vector)){
+    if([pos, size, speed].some((vector) => !(vector instanceof Vector)){
       throw `только объекты типа Vector`;
     }
     this.pos = pos;
@@ -34,7 +34,7 @@ class Actor{
     this.speed = speed;
   }
   act() {}
-// правильно ли задал координаты  ? 
+
   get left() {
     return this.pos.x;
   }
@@ -64,8 +64,6 @@ class Actor{
           this.left < actor.right &&
           this.bottom > actor.top && 
           this.top < actor.bottom;
-
-  // вычисления ведуться по 'y' сверху вниз ?
   }
 }
 
@@ -98,7 +96,7 @@ class Level{
     const leftBorder = objToMove.x + objSize.x; 
 
     if (floorBorder > this.height) {
-      retirn 'lava';
+      return 'lava';
     }
     if (ceilBorder > this.height || leftBorder > this.width || rightBorder > this.width) {
       return 'wall';
@@ -169,21 +167,6 @@ class LevelParser {
   }
 }
 
-const actors = {
-      '@': Player,
-      'v': FireRain,
-      'o': Coin,
-      '=': HorizontalFireball,
-      '|': VerticalFireball
-    };
-const parser = new LevelParser(actors);
-
-
-loadLevels().then(prom => {
-  runGame(JSON.parse(prom), parser, DOMDisplay).then(() => console.log('Вы выиграли!'));
-});
-
-
 class Fireball extends Actor {
   constructor(pos = new Vector(0, 0), speed = new vector(0, 0)) {
     super(pos, new Vector(1, 1), speed);
@@ -236,7 +219,7 @@ class Coin extends Actor {
     super(pos.plus(new Vector(0, 0), new Vector(0, 0), new Vector(0, 0)));
     this.springSpeed = 8;
     this.springDist = 0.07;
-    this.spring = rand(Math,PI * 2, 0);
+    this.spring = rand(Math.PI * 2, 0);
     this.startPos = this.pos;
   }
   get type() {
@@ -267,3 +250,19 @@ class Player extends Actor {
     return 'player';
   }
 }
+
+
+const actors = {
+      '@': Player,
+      'v': FireRain,
+      'o': Coin,
+      '=': HorizontalFireball,
+      '|': VerticalFireball
+    };
+const parser = new LevelParser(actors);
+
+
+loadLevels().then(prom => {
+  runGame(JSON.parse(prom), parser, DOMDisplay).then(() => console.log('Вы выиграли!'));
+});
+
