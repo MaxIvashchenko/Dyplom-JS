@@ -26,7 +26,7 @@ class Vector {
 
 class Actor{
   constructor(pos = new Vector(0, 0), size = new Vector(1, 1), speed = new Vector(0, 0)) {
-    if([pos, size, speed].some((vector) => !(vector instanceof Vector)){
+    if([pos, size, speed].some((vector) => !(vector instanceof Vector))){
       throw `только объекты типа Vector`;
     }
     this.pos = pos;
