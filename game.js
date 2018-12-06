@@ -216,7 +216,7 @@ class FireRain extends Fireball {
 
 class Coin extends Actor {
   constructor(pos = new Vector(0, 0)) {
-    super(pos.plus(new Vector(0, 0), new Vector(0, 0), new Vector(0, 0)));
+    super(pos.plus(new Vector(0.2, 0.1)), new Vector(0.6, 0.6), new Vector(0, 0));
     this.springSpeed = 8;
     this.springDist = 0.07;
     this.spring = rand(Math.PI * 2, 0);
