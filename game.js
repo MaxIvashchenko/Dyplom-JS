@@ -69,8 +69,8 @@ class Actor{
 
 class Level{
   constructor(grid = [], actors = []) {
-    this.grid = grid;
-    this.actors = actors;
+    this.grid = grid.slice();
+    this.actors = actors.slice();
     this.player = actors.find((elType) => elType.type === 'player');
     this.height = this.grid.length;
     this.width = Math.max(0, ...this.grid.map(cell => cell.length));
@@ -98,13 +98,13 @@ class Level{
     if (floorBorder > this.height) {
       return 'lava';
     }
-    if (ceilBorder > this.height || leftBorder > this.width || rightBorder > this.width) {
+    if (ceilBorder > 0 || leftBorder > 0 || rightBorder > this.width) {
       return 'wall';
     }
   }
   removeActor(actor) {
   const result = this.actors.findIndex((thisActor) => actor.type === thisActor);
-    if (result >= 0) {
+    if (result !== -1) {
       this.actors.splice(result, 1);
     }
   }
@@ -265,4 +265,3 @@ const parser = new LevelParser(actors);
 loadLevels().then(prom => {
   runGame(JSON.parse(prom), parser, DOMDisplay).then(() => console.log('Вы выиграли!'));
 });
-
