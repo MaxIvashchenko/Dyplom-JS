@@ -9,7 +9,7 @@ class Vector {
   
   plus(vector) {
     if (!(vector instanceof Vector)) {
-      throw `только вектор типа Vector`;
+      throw new Error ('только вектор типа Vector');
     }
     const newX = this.x + vector.x;
     const newY = this.y + vector.y;
@@ -27,7 +27,7 @@ class Vector {
 class Actor{
   constructor(pos = new Vector(0, 0), size = new Vector(1, 1), speed = new Vector(0, 0)) {
     if([pos, size, speed].some((vector) => !(vector instanceof Vector))){
-      throw `только объекты типа Vector`;
+      throw new Error ('только объекты типа Vector');
     }
     this.pos = pos;
     this.size = size;
@@ -54,7 +54,7 @@ class Actor{
 
   isIntersect(actor) {
   if(!(actor instanceof Actor)){
-    throw `только объекты типа Actor`;
+    throw new Error ('только объекты типа Actor');
   }
   if (actor === this) {
     return false;
@@ -81,29 +81,37 @@ class Level{
   return this.status !== 0 && this.finishDelay < 0;
   }
   actorAt(actor) {
-    if(actor === undefined && !(actor instanceof Actor)) {
-      throw `значение не может быть пустым и можно передать только объекты типа Actor`;
+    if(actor === undefined || !(actor instanceof Actor)) {
+      throw new Error ('значение не может быть пустым и можно передать только объекты типа Actor');
     }
-    return this.actor.find((thisActor) => actor.isIntersect(thisActor)); // правильно ли?
+    return this.actors.find((thisActor) => actor.isIntersect(thisActor)); // правильно ли?
   }
-  obstacleAt(objToMove, objSize){
+  obstacleAt(objToMove, objSize) {
     if (!(objToMove instanceof Vector) || !(objSize instanceof Vector)) {
-      throw `только объекты типа Vector`;
+      throw new Error ('только объекты типа Vector');
     }
-    const rightBorder = objToMove.x; 
     const ceilBorder = objToMove.y; 
+    const rightBorder = objToMove.x + objSize.x; 
     const floorBorder = objToMove.y + objSize.y;
-    const leftBorder = objToMove.x + objSize.x; 
-
+    const leftBorder = objToMove.x; 
+    
+    if (ceilBorder < 0 || leftBorder < 0 || rightBorder > this.width) {
+      return 'wall';
+    }
     if (floorBorder > this.height) {
       return 'lava';
     }
-    if (ceilBorder > 0 || leftBorder > 0 || rightBorder > this.width) {
-      return 'wall';
+    for (let y = Math.floor(ceilBorder); y < Math.ceil(floorBorder); y++) {
+      for (let x = Math.floor(leftBorder); x < Math.ceil(rightBorder); x++) {
+        const fieldType = this.grid[y][x];
+        if (fieldType) {
+          return fieldType;
+        }
+      }
     }
   }
   removeActor(actor) {
-  const result = this.actors.findIndex((thisActor) => actor.type === thisActor);
+    const result = this.actors.findIndex((thisActor) => actor === thisActor);
     if (result !== -1) {
       this.actors.splice(result, 1);
     }
@@ -113,7 +121,7 @@ class Level{
   }
   playerTouched(objType, actorTouch) {
     if (typeof objType !== 'string') {
-      throw  `в параметре должен быть тип строка`;
+      throw new Error  ('в параметре должен быть тип строка');
     }
     if (objType === 'lava' || objType === 'fireball') {
       this.status = 'lost';
@@ -121,7 +129,8 @@ class Level{
     if (this.status !== null) {
       return false;
     }
-    if (objType === 'coin' || actorTouch.type === 'coin') {
+    if (objType === 'coin' && actorTouch.type === 'coin') {
+      this.removeActor(actorTouch);
       if (this.noMoreActors('coin')) {
         this.status = 'won';
       } 
@@ -265,3 +274,4 @@ const parser = new LevelParser(actors);
 loadLevels().then(prom => {
   runGame(JSON.parse(prom), parser, DOMDisplay).then(() => console.log('Вы выиграли!'));
 });
+
